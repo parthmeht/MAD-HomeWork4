@@ -32,11 +32,14 @@ public class MainActivity extends AppCompatActivity implements GetAPI.KeywordDat
     private HashMap<String,ArrayList<String>> keywordData;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> keywords;
+    private String selectedKeyword;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textView = findViewById(R.id.textView);
         keywordData = new HashMap<>();
         new GetAPI(MainActivity.this).execute("http://dev.theappsdr.com/apis/photos/keywords.php");
 
@@ -60,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements GetAPI.KeywordDat
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Log.d("Keyword", keywords.get(which));
+                            selectedKeyword = keywords.get(which);
+                            textView.setText(selectedKeyword);
                         }
                     });
                     builder.setTitle("Choose a Keyword");
