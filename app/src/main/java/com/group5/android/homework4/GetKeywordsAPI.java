@@ -12,11 +12,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GetAPI extends AsyncTask<String, Void, HashMap<String,ArrayList<String>>> {
+public class GetKeywordsAPI extends AsyncTask<String, Void, HashMap<String,ArrayList<String>>> {
 
     KeywordData keywordData;
 
-    public GetAPI(KeywordData keywordData) {
+    public GetKeywordsAPI(KeywordData keywordData) {
         this.keywordData = keywordData;
     }
 
@@ -36,13 +36,13 @@ public class GetAPI extends AsyncTask<String, Void, HashMap<String,ArrayList<Str
             Log.d("keyword",string);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Log.e("Connection", "MalformedURLException Error");
+            Log.e("Connection", "GetKeywordsAPI MalformedURLException Error");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("Connection", "IOException Error");
+            Log.e("Connection", "GetKeywordsAPI IOException Error");
         } catch (Exception e){
             e.printStackTrace();
-            Log.e("Connection", "Exception Error");
+            Log.e("Connection", "GetKeywordsAPI Exception Error");
         } finally {
             if (connection != null){
                 connection.disconnect();
@@ -57,6 +57,6 @@ public class GetAPI extends AsyncTask<String, Void, HashMap<String,ArrayList<Str
     }
 
     public static interface KeywordData{
-        public void handleData(HashMap<String,ArrayList<String>> data);
+        void handleData(HashMap<String,ArrayList<String>> data);
     }
 }
