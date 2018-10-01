@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
             progressDialog.dismiss();
             buttonNext.setEnabled(false);
             buttonPrev.setEnabled(false);
+            imageView.setImageResource(R.drawable.ic_launcher_background);
             Toast.makeText(this, "No Image Found", Toast.LENGTH_LONG).show();
         }
     }
