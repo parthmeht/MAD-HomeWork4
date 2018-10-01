@@ -81,4 +81,5 @@
         app:layout_constraintStart_toEndOf="@+id/buttonPrevious"
         app:layout_constraintTop_toTopOf="@+id/buttonPrevious"
         app:srcCompat="@drawable/next" />
+
 </android.support.constraint.ConstraintLayout>
