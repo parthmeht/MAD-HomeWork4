@@ -33,19 +33,16 @@ public class GetUrlAPI extends AsyncTask<String, Void, ArrayList<String>> {
             connection = (HttpURLConnection) url.openConnection();
             string = IOUtils.toString(connection.getInputStream(), "UTF8");
             Log.d("url",string);
-            String[] word = string.split("\n");
-            ArrayList<String> s = new ArrayList<String>();
-            for (String w : word){
-//                urlData.add(w);
-                Log.d("HOLA",w);
-                s.add(w);
-//                urlData.add(w);
+            if (string!=null && !"".equalsIgnoreCase(string)){
+                String[] word = string.split("\n");
+                ArrayList<String> s = new ArrayList<String>();
+                for (String w : word){
+                    s.add(w);
+                }
+                urlData = s;
+                //urlData = (ArrayList<String>) Arrays.asList(string.split("\n"));
+                Log.d("url00",urlData.toString());
             }
-            urlData = s;
-
-//            urlData = (ArrayList<String>) Arrays.asList(string.split("\n"));
-            Log.d("url00",urlData.toString());
-//            Log.d("HOLA1",urlData.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
             Log.e("Connection", "GetUrlAPI MalformedURLException Error");

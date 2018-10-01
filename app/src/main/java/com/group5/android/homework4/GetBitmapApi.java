@@ -40,7 +40,6 @@ public class GetBitmapApi extends AsyncTask<String, Void, Bitmap>{
             Log.d("INSIDE",strings[0]);
             return myBitmap;
         } catch (MalformedURLException e) {
-//            Toast.makeText(context,"No Image Found",Toast.LENGTH_LONG).show();
             Log.d("HOLAAA","hola");
             e.printStackTrace();
         } catch (IOException e) {

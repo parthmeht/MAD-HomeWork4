@@ -34,18 +34,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.KeywordData, GetUrlAPI.UrlData, GetBitmapApi.BitmapData{
+public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.KeywordData, GetUrlAPI.UrlData, GetBitmapApi.BitmapData {
 
-    private HashMap<String,ArrayList<String>> keywordData;
+    private HashMap<String, ArrayList<String>> keywordData;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> keywords;
     private String selectedKeyword;
     private TextView textView;
     private ImageButton buttonNext, buttonPrev;
-    ImageView imageView;
-    ProgressDialog progressDialog ;
-    ArrayList<String> bitmapData;
-    int bmapIndex ;
+    private ImageView imageView;
+    private ProgressDialog progressDialog;
+    private ArrayList<String> bitmapData;
+    private int bmapIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +60,17 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
         buttonPrev.setEnabled(false);
         buttonNext.setEnabled(false);
 
-        if (isConnected()){
+        if (isConnected()) {
             keywordData = new HashMap<>();
             new GetKeywordsAPI(MainActivity.this).execute("http://dev.theappsdr.com/apis/photos/keywords.php");
 
             findViewById(R.id.buttonGo).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (keywordData!=null && keywordData.size()>0){
+                    if (keywordData != null && keywordData.size() > 0) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         keywords = new ArrayList<String>(keywordData.keySet());
-                        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item,keywords){
+                        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, keywords) {
                             @NonNull
                             @Override
                             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -83,15 +83,13 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
                         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                progressDialog.show();
                                 Log.d("Keyword", keywords.get(which));
-//                                progressDialog.create();
-//                                progressDialog.setMessage("Loading Dictionary");
-//                                progressDialog.show();
                                 selectedKeyword = keywords.get(which);
                                 textView.setText(selectedKeyword);
                                 RequestParams params = new RequestParams();
-                                params.addParameter("keyword",selectedKeyword);
-                                new GetUrlAPI(MainActivity.this,params).execute("http://dev.theappsdr.com/apis/photos/index.php");
+                                params.addParameter("keyword", selectedKeyword);
+                                new GetUrlAPI(MainActivity.this, params).execute("http://dev.theappsdr.com/apis/photos/index.php");
                             }
                         });
                         builder.setTitle("Choose a Keyword");
@@ -107,9 +105,6 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
             });
         } else {
             Toast.makeText(textView.getContext(), "No Internet Connection!", Toast.LENGTH_LONG).show();
-            buttonPrev.setEnabled(false);
-            buttonNext.setEnabled(true);
-
         }
 
         buttonPrev.setOnClickListener(new View.OnClickListener() {
@@ -117,13 +112,12 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
             public void onClick(View v) {
                 Log.d("Hello", String.valueOf(bitmapData.size()) + String.valueOf(bmapIndex));
                 progressDialog.show();
-                if (bmapIndex == 0){
-                    bmapIndex = bitmapData.size()-1;
-                    new GetBitmapApi(MainActivity.this,MainActivity.this).execute(bitmapData.get(bmapIndex));
-                }
-                else {
+                if (bmapIndex == 0) {
+                    bmapIndex = bitmapData.size() - 1;
+                    new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
+                } else {
                     bmapIndex = bmapIndex - 1;
-                    new GetBitmapApi(MainActivity.this,MainActivity.this).execute(bitmapData.get(bmapIndex));
+                    new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
                 }
             }
         });
@@ -133,11 +127,10 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
             @Override
             public void onClick(View v) {
                 progressDialog.show();
-                if (bmapIndex == bitmapData.size() - 1){
+                if (bmapIndex == bitmapData.size() - 1) {
                     bmapIndex = 0;
                     new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
-                }
-                else {
+                } else {
                     bmapIndex = bmapIndex + 1;
                     new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
                 }
@@ -145,58 +138,38 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
         });
     }
 
-    private boolean isConnected(){
+    private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isConnected()
-                || (networkInfo.getType() != ConnectivityManager.TYPE_WIFI && networkInfo.getType() != ConnectivityManager.TYPE_MOBILE)){
+                || (networkInfo.getType() != ConnectivityManager.TYPE_WIFI && networkInfo.getType() != ConnectivityManager.TYPE_MOBILE)) {
             return false;
         }
         return true;
     }
 
-    Bitmap getImageBitmap(String... strings) {
-        try {
-            URL url = new URL(strings[0]);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     @Override
-    public void handleData(HashMap<String,ArrayList<String>> data) {
+    public void handleData(HashMap<String, ArrayList<String>> data) {
         keywordData = data;
     }
 
     @Override
     public void urlHandleData(final ArrayList<String> data) {
-        keywordData.put(selectedKeyword, data);
-        bitmapData = data;
-        if (data != null && data.size()>0){
+        if (data != null && data.size() > 0) {
+            keywordData.put(selectedKeyword, data);
+            bitmapData = data;
             buttonNext.setEnabled(true);
             buttonPrev.setEnabled(true);
-            Log.d("DataFetch",data.get(0).toString());
+            Log.d("DataFetch", data.get(0).toString());
             bmapIndex = 0;
             progressDialog.setMessage("Loading Image");
-            progressDialog.show();
             new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
-        }
-        else {
+        } else {
+            progressDialog.dismiss();
             buttonNext.setEnabled(false);
             buttonPrev.setEnabled(false);
-            Toast.makeText(this,"No Image Found",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No Image Found", Toast.LENGTH_LONG).show();
         }
-//        progressDialog.dismiss();
-
     }
 
     @Override
