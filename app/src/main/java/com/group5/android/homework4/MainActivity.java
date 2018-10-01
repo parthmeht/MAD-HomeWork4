@@ -158,8 +158,15 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
         if (data != null && data.size() > 0) {
             keywordData.put(selectedKeyword, data);
             bitmapData = data;
-            buttonNext.setEnabled(true);
-            buttonPrev.setEnabled(true);
+            if (data.size() == 1){
+                buttonNext.setEnabled(false);
+                buttonPrev.setEnabled(false);
+            }
+            else {
+                buttonNext.setEnabled(true);
+                buttonPrev.setEnabled(true);
+            }
+
             Log.d("DataFetch", data.get(0).toString());
             bmapIndex = 0;
             progressDialog.setMessage("Loading Image");
