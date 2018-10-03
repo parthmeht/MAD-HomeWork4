@@ -103,14 +103,18 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
         buttonPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Hello", String.valueOf(bitmapData.size()) + String.valueOf(bmapIndex));
-                progressDialog.show();
-                if (bmapIndex == 0) {
-                    bmapIndex = bitmapData.size() - 1;
-                    new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
-                } else {
-                    bmapIndex = bmapIndex - 1;
-                    new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
+                if (isConnected()){
+                    Log.d("Hello", String.valueOf(bitmapData.size()) + String.valueOf(bmapIndex));
+                    progressDialog.show();
+                    if (bmapIndex == 0) {
+                        bmapIndex = bitmapData.size() - 1;
+                        new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
+                    } else {
+                        bmapIndex = bmapIndex - 1;
+                        new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
+                    }
+                }else{
+                    Toast.makeText(textView.getContext(), "No Internet Connection!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -119,13 +123,17 @@ public class MainActivity extends AppCompatActivity implements GetKeywordsAPI.Ke
 
             @Override
             public void onClick(View v) {
-                progressDialog.show();
-                if (bmapIndex == bitmapData.size() - 1) {
-                    bmapIndex = 0;
-                    new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
-                } else {
-                    bmapIndex = bmapIndex + 1;
-                    new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
+                if (isConnected()){
+                    progressDialog.show();
+                    if (bmapIndex == bitmapData.size() - 1) {
+                        bmapIndex = 0;
+                        new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
+                    } else {
+                        bmapIndex = bmapIndex + 1;
+                        new GetBitmapApi(MainActivity.this, MainActivity.this).execute(bitmapData.get(bmapIndex));
+                    }
+                }else{
+                    Toast.makeText(textView.getContext(), "No Internet Connection!", Toast.LENGTH_LONG).show();
                 }
             }
         });
